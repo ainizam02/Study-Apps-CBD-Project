@@ -1,0 +1,47 @@
+< html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPA Calculator</title>
+</head>
+<body>
+    <h1>GPA Calculator</h1>
+    <form id="gpa-form">
+        <label for="letterGrade">Enter Letter Grade:</label>
+        <input type="text" id="letterGrade" name="letterGrade" maxlength="1" required><br><br>
+
+        <label for="creditHours">Enter Credit Hours:</label>
+        <input type="number" id="creditHours" name="creditHours" required><br><br>
+
+        <button type="button" onclick="addGrade()">Add Grade</button>
+        <button type="button" onclick="calculateGPA()">Calculate GPA</button>
+    </form>
+
+    <h2>Results</h2>
+    <ul id="results"></ul>
+
+    <script>
+        const grades = [];
+
+        function addGrade() {
+            const letterGrade = document.getElementById("letterGrade").value;
+            const creditHours = document.getElementById("creditHours").value;
+
+            grades.push({ letterGrade, creditHours: parseInt(creditHours) });
+            document.getElementById("results").innerHTML += `<li>${letterGrade}: ${creditHours} hours</li>`;
+        }
+
+        async function calculateGPA() {
+            const response = await fetch('/calculate-gpa', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ grades })
+            });
+
+            const result = await response.json();
+            alert(`GPA: ${result.gpa}`);
+        }
+    </script>
+</body>
+</html>
